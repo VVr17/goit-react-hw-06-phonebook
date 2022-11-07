@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
+import { toast } from 'react-toastify'; // Notifications
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form'; // Forms
 import { yupResolver } from '@hookform/resolvers/yup'; // for React-hook-form work with Yup
 import * as yup from 'yup'; // Form validation
-import { toast } from 'react-toastify'; // Notifications
+import { addContact } from 'redux/contactsSlice';
 import { Button } from 'components/Button/Button';
+import { getContacts } from 'redux/selectors';
 import { Input } from './Input/Input';
 
 const INITIAL_STATE = {
@@ -30,7 +32,10 @@ const validationSchema = yup.object().shape({
     .required('Number is required'),
 });
 
-export const NewContactForm = ({ contacts, onFormSubmit }) => {
+export const NewContactForm = () => {
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -49,8 +54,8 @@ export const NewContactForm = ({ contacts, onFormSubmit }) => {
       reset();
       return;
     }
-
-    onFormSubmit({ ...data });
+    dispatch(addContact(data));
+    toast.success(`${name.toUpperCase()} successfully added to CONTACTS`);
     reset();
   };
 
@@ -80,20 +85,3 @@ export const NewContactForm = ({ contacts, onFormSubmit }) => {
     </form>
   );
 };
-
-NewContactForm.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.exact({
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-    }).isRequired
-  ),
-  onFormSubmit: PropTypes.func.isRequired,
-};
-
-/* <label>
-  Name
-  <input type="text" placeholder="Name" {...register('name')} />
-  {errors.name && <p>{errors.name?.message}</p>}
-</label>  */
