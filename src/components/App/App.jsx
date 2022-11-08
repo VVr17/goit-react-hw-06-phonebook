@@ -7,19 +7,12 @@ import { Filter } from 'components/Filter/Filter';
 import { NewContactForm } from 'components/NewContactForm/NewContactForm';
 import { Section } from '../Section/Section';
 import { Text, Title } from './App.styled';
+import { getFilteredContacts } from 'helpers/getFilteredContacts';
 
 export const App = () => {
   const contacts = useSelector(getContacts);
   const filter = useSelector(getFilter);
   const filteredContacts = getFilteredContacts(contacts, filter);
-
-  function getFilteredContacts(contacts, filter) {
-    const normalizedFilter = filter.toLowerCase();
-
-    return contacts.filter(({ name }) =>
-      name.toLowerCase().includes(normalizedFilter)
-    );
-  }
 
   return (
     <Box as="main" bg="mainBackgroundColor">
@@ -30,7 +23,7 @@ export const App = () => {
       <Section title="Contacts">
         {contacts.length > 0 && <Filter />}
         {filteredContacts.length > 0 ? (
-          <ContactList contacts={filteredContacts} />
+          <ContactList />
         ) : (
           <Text>There are no contacts</Text>
         )}
